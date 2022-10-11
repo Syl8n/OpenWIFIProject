@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="/">
+    <output-path>$PROJECT_DIR$/out/artifacts/_</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="OpenWIFI/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="OpenWIFI" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="javax.servlet.api" />
+          <element id="library" level="project" name="Maven: com.squareup.okhttp3:okhttp:4.9.3" />
+          <element id="library" level="project" name="Maven: com.squareup.okio:okio:2.8.0" />
+          <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0" />
+          <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.4.10" />
+          <element id="library" level="project" name="Maven: org.jetbrains:annotations:13.0" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.9.0" />
+          <element id="library" level="project" name="googlecode.json.simple" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

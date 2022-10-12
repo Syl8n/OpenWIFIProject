@@ -78,7 +78,6 @@ public class WifiService {
             rd.close();
             conn.disconnect();
 
-            System.out.println(sb.toString());
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(sb.toString());
             JSONObject wifiMeta = (JSONObject) jsonObject.get("TbPublicWifiInfo");
 
@@ -106,6 +105,64 @@ public class WifiService {
         return maxEnd;
     }
 
+    public static void getLogs(){
+        try {
+            Class.forName(DB_CLASS);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            connection = DriverManager.getConnection(DB_URL);
+
+            String sql = " select * from wifi_log ";
+            ps = connection.prepareStatement(sql);
+
+            rs = ps.executeQuery();
+            if(!Log.list.isEmpty()){
+                Log.list.clear();
+            }
+            while(rs.next()){
+                Log log = new Log();
+                log.setId(rs.getInt("ID"));
+                log.setLat(rs.getFloat("LAT"));
+                log.setLnt(rs.getFloat("LNT"));
+                log.setDttm(rs.getString("DTTM"));
+                Log.list.add(log);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+
+            try {
+                if (ps != null && !ps.isClosed()) {
+                    ps.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void insert(Connection connection, Wifi wifi) {
         PreparedStatement ps = null;
 
@@ -130,8 +187,8 @@ public class WifiService {
             ps.setString(11, wifi.getX_SWIFI_CNSTC_YEAR());
             ps.setString(12, wifi.getX_SWIFI_INOUT_DOOR());
             ps.setString(13, wifi.getX_SWIFI_REMARS3());
-            ps.setString(14, wifi.getLAT());
-            ps.setString(15, wifi.getLNT());
+            ps.setString(14, wifi.getLNT());
+            ps.setString(15, wifi.getLAT());
             ps.setString(16, wifi.getWORK_DTTM());
 
             int n = ps.executeUpdate();
@@ -155,8 +212,8 @@ public class WifiService {
         }
     }
 
-    private static float calcDist(float x1, float x2, float y1, float y2){
-        return (float) Math.sqrt((x1 - x2) * (x1 - x2) * 111 + (y1 - y2) * (y1 - y2) * 90);
+    private static float calcDist(float x1, float y1, float x2, float y2){
+        return (float) Math.sqrt((x1 - x2) * (x1 - x2) * 90 + (y1 - y2) * (y1 - y2) * 111);
     }
 
     public static void search(float lat, float lnt){
@@ -200,7 +257,7 @@ public class WifiService {
                 wifi.setWORK_DTTM(rs.getString("WORK_DTTM"));
                 ApiModel apiModel = new ApiModel();
                 apiModel.setWifi(wifi);
-                apiModel.setDist(calcDist(Float.parseFloat(wifi.getLAT()), Float.parseFloat(wifi.getLNT()), lat, lnt));
+                apiModel.setDist(calcDist(Float.parseFloat(wifi.getLNT()), Float.parseFloat(wifi.getLAT()), lnt, lat));
                 Wifi.list.offer(apiModel);
             }
         } catch (SQLException e){
@@ -249,13 +306,58 @@ public class WifiService {
         try {
             connection = DriverManager.getConnection(DB_URL);
 
-            // Create table
             String sql = " INSERT into wifi_log (LAT, LNT, DTTM) " +
                     " values (?, ?, ?) ";
             ps = connection.prepareStatement(sql);
             ps.setFloat(1, lat);
             ps.setFloat(2, lnt);
             ps.setString(3, LocalDateTime.now().toString());
+
+            int n = ps.executeUpdate();
+            if(n > 0){
+                System.out.println("생성 성공");
+            } else {
+                System.out.println("생성 실패");
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null && !ps.isClosed()) {
+                    ps.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void deleteLog(int id){
+        try {
+            Class.forName(DB_CLASS);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = DriverManager.getConnection(DB_URL);
+
+            String sql = " DELETE from wifi_log " +
+                    " where ID = ? ";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
 
             int n = ps.executeUpdate();
             if(n > 0){

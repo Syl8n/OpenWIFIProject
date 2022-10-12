@@ -50,7 +50,7 @@
           <td><%= log.getLnt() %></td>
           <td><%= log.getLat() %></td>
           <td><%= log.getDttm() %></td>
-          <td><button type="button" onclick="">삭제</button></td>
+          <td><button type="button" onclick=" location='/MainServlet.do?comm=delete&num=<%= log.getId()%>'">삭제</button></td>
         </tr>
         <% } %>
         <% } %>

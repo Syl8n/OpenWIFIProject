@@ -2,11 +2,12 @@ package classes;
 
 import lombok.Data;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class Log {
-    public static Stack<Log> list = new Stack<>();
+    public static List<Log> list = new ArrayList<>();
     private int id;
     private float lat;
     private float lnt;

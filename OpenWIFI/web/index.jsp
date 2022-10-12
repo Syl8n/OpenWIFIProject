@@ -50,8 +50,8 @@
           <th>설치년도</th>
           <th>실내외구분</th>
           <th>WIFI접속환경</th>
-          <th>X좌표</th>
-          <th>Y좌표</th>
+          <th>위도</th>
+          <th>경도</th>
           <th>작업일자</th>
         </tr>
         <% if(!Wifi.list.isEmpty()) { %>

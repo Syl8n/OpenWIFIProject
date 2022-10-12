@@ -4,6 +4,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import classes.WifiService;
@@ -34,6 +35,8 @@ public class MainServlet extends HttpServlet {
             response.sendRedirect("load-wifi.jsp");
         } else if("log".equals(param)){
             // DB에서 로그 출력 & 저장 후 history.jsp로 리디렉트
+            WifiService.getLogs();
+            response.sendRedirect("history.jsp");
         }
     }
 
@@ -49,6 +52,13 @@ public class MainServlet extends HttpServlet {
         System.out.println(lnt);
         if(!lat.isEmpty() && !lnt.isEmpty()) {
             WifiService.search(Float.parseFloat(lat), Float.parseFloat(lnt));
+        } else{
+            PrintWriter out = response.getWriter();
+            out.println("<script>");
+            out.println("alert('LAT, LNT를 입력해주세요.');");
+            out.println("location.href = \"index.jsp\";");
+            out.println("</script>");
+            out.close();
         }
         response.sendRedirect("/");
     }

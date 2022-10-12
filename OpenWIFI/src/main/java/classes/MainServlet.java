@@ -20,17 +20,20 @@ public class MainServlet extends HttpServlet {
         String key = "68716c586f6d616737375644517162";
         String docType = "json";
         String category = "TbPublicWifiInfo";
-        long dataNum = 0L;
-        try {
-            dataNum = WifiService.getList(key, docType, category);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+
 
         if("list".equals(param)){
+            long dataNum = 0L;
+            try {
+                dataNum = WifiService.getList(key, docType, category);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             HttpSession session = request.getSession();
             session.setAttribute("datanum", dataNum);
             response.sendRedirect("load-wifi.jsp");
+        } else if("log".equals(param)){
+            // DB에서 로그 출력 & 저장 후 history.jsp로 리디렉트
         }
     }
 
@@ -45,7 +48,7 @@ public class MainServlet extends HttpServlet {
         System.out.println(lat);
         System.out.println(lnt);
         if(!lat.isEmpty() && !lnt.isEmpty()) {
-            WifiService.search(Double.parseDouble(lat), Double.parseDouble(lnt));
+            WifiService.search(Float.parseFloat(lat), Float.parseFloat(lnt));
         }
         response.sendRedirect("/");
     }

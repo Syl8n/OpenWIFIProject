@@ -1,4 +1,5 @@
 <%@ page import="classes.Wifi" %>
+<%@ page import="classes.ApiModel" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
@@ -55,23 +56,27 @@
         </tr>
         <% if(!Wifi.list.isEmpty()) { %>
         <% for(int i = 0; i < 20 && Wifi.list.peek() != null; i++){ %>
-        <% Wifi wifi = Wifi.list.poll().getWifi(); %>
-        <td><%= wifi.getX_SWIFI_MGR_NO() %></td>
-        <td><%= wifi.getX_SWIFI_WRDOFC() %></td>
-        <td><%= wifi.getX_SWIFI_MAIN_NM() %></td>
-        <td><%= wifi.getX_SWIFI_ADRES1() %></td>
-        <td><%= wifi.getX_SWIFI_ADRES2() %></td>
-        <td><%= wifi.getX_SWIFI_INSTL_FLOOR() %></td>
-        <td><%= wifi.getX_SWIFI_INSTL_TY() %></td>
-        <td><%= wifi.getX_SWIFI_INSTL_MBY() %></td>
-        <td><%= wifi.getX_SWIFI_SVC_SE() %></td>
-        <td><%= wifi.getX_SWIFI_CMCWR() %></td>
-        <td><%= wifi.getX_SWIFI_CNSTC_YEAR() %></td>
-        <td><%= wifi.getX_SWIFI_INOUT_DOOR() %></td>
-        <td><%= wifi.getX_SWIFI_REMARS3() %></td>
-        <td><%= wifi.getLAT() %></td>
-        <td><%= wifi.getLNT() %></td>
-        <td><%= wifi.getWORK_DTTM() %></td>
+        <% ApiModel apiModel = Wifi.list.poll(); %>
+        <% Wifi wifi = apiModel.getWifi(); %>
+        <tr>
+          <td><%= apiModel.dist %></td>
+          <td><%= wifi.getX_SWIFI_MGR_NO() %></td>
+          <td><%= wifi.getX_SWIFI_WRDOFC() %></td>
+          <td><%= wifi.getX_SWIFI_MAIN_NM() %></td>
+          <td><%= wifi.getX_SWIFI_ADRES1() %></td>
+          <td><%= wifi.getX_SWIFI_ADRES2() %></td>
+          <td><%= wifi.getX_SWIFI_INSTL_FLOOR() %></td>
+          <td><%= wifi.getX_SWIFI_INSTL_TY() %></td>
+          <td><%= wifi.getX_SWIFI_INSTL_MBY() %></td>
+          <td><%= wifi.getX_SWIFI_SVC_SE() %></td>
+          <td><%= wifi.getX_SWIFI_CMCWR() %></td>
+          <td><%= wifi.getX_SWIFI_CNSTC_YEAR() %></td>
+          <td><%= wifi.getX_SWIFI_INOUT_DOOR() %></td>
+          <td><%= wifi.getX_SWIFI_REMARS3() %></td>
+          <td><%= wifi.getLAT() %></td>
+          <td><%= wifi.getLNT() %></td>
+          <td><%= wifi.getWORK_DTTM() %></td>
+        </tr>
         <% } %>
         <% } %>
       </table>

@@ -17,6 +17,7 @@ import org.json.simple.parser.ParseException;
 import org.sqlite.core.DB;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 
 public class WifiService {
     private static final String DB_URL = "jdbc:sqlite:wifiTest.db";
@@ -129,8 +130,8 @@ public class WifiService {
             ps.setString(11, wifi.getX_SWIFI_CNSTC_YEAR());
             ps.setString(12, wifi.getX_SWIFI_INOUT_DOOR());
             ps.setString(13, wifi.getX_SWIFI_REMARS3());
-            ps.setFloat(14, Float.parseFloat(wifi.getLAT()));
-            ps.setFloat(15, Float.parseFloat(wifi.getLNT()));
+            ps.setString(14, wifi.getLAT());
+            ps.setString(15, wifi.getLNT());
             ps.setString(16, wifi.getWORK_DTTM());
 
             int n = ps.executeUpdate();
@@ -154,8 +155,11 @@ public class WifiService {
         }
     }
 
-    public static void search(double lat, double lnt){
+    private static float calcDist(float x1, float x2, float y1, float y2){
+        return (float) Math.sqrt((x1 - x2) * (x1 - x2) * 111 + (y1 - y2) * (y1 - y2) * 90);
+    }
 
+    public static void search(float lat, float lnt){
         try {
             Class.forName(DB_CLASS);
         } catch (ClassNotFoundException ex) {
@@ -173,10 +177,31 @@ public class WifiService {
             ps = connection.prepareStatement(sql);
 
             rs = ps.executeQuery();
+            if(!Wifi.list.isEmpty()){
+                Wifi.list.clear();
+            }
             while(rs.next()){
-                String mgrNo = rs.getString("X_SWIFI_MGR_NO");
-
-                System.out.println(mgrNo);
+                Wifi wifi = new Wifi();
+                wifi.setX_SWIFI_MGR_NO(rs.getString("X_SWIFI_MGR_NO"));
+                wifi.setX_SWIFI_WRDOFC(rs.getString("X_SWIFI_WRDOFC"));
+                wifi.setX_SWIFI_MAIN_NM(rs.getString("X_SWIFI_MAIN_NM"));
+                wifi.setX_SWIFI_ADRES1(rs.getString("X_SWIFI_ADRES1"));
+                wifi.setX_SWIFI_ADRES2(rs.getString("X_SWIFI_ADRES2"));
+                wifi.setX_SWIFI_INSTL_FLOOR(rs.getString("X_SWIFI_INSTL_FLOOR"));
+                wifi.setX_SWIFI_INSTL_TY(rs.getString("X_SWIFI_INSTL_TY"));
+                wifi.setX_SWIFI_INSTL_MBY(rs.getString("X_SWIFI_INSTL_MBY"));
+                wifi.setX_SWIFI_SVC_SE(rs.getString("X_SWIFI_SVC_SE"));
+                wifi.setX_SWIFI_CMCWR(rs.getString("X_SWIFI_CMCWR"));
+                wifi.setX_SWIFI_CNSTC_YEAR(rs.getString("X_SWIFI_CNSTC_YEAR"));
+                wifi.setX_SWIFI_INOUT_DOOR(rs.getString("X_SWIFI_INOUT_DOOR"));
+                wifi.setX_SWIFI_REMARS3(rs.getString("X_SWIFI_REMARS3"));
+                wifi.setLAT(rs.getString("LAT"));
+                wifi.setLNT(rs.getString("LNT"));
+                wifi.setWORK_DTTM(rs.getString("WORK_DTTM"));
+                ApiModel apiModel = new ApiModel();
+                apiModel.setWifi(wifi);
+                apiModel.setDist(calcDist(Float.parseFloat(wifi.getLAT()), Float.parseFloat(wifi.getLNT()), lat, lnt));
+                Wifi.list.offer(apiModel);
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -205,9 +230,58 @@ public class WifiService {
                 e.printStackTrace();
             }
         }
+
+        logging(lat, lnt);
     }
 
-    public static void logging(){
+    public static void logging(float lat, float lnt){
+        WifiConnect.createLogTable(DB_CLASS, DB_URL, "wifi_log");
 
+        try {
+            Class.forName(DB_CLASS);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = DriverManager.getConnection(DB_URL);
+
+            // Create table
+            String sql = " INSERT into wifi_log (LAT, LNT, DTTM) " +
+                    " values (?, ?, ?) ";
+            ps = connection.prepareStatement(sql);
+            ps.setFloat(1, lat);
+            ps.setFloat(2, lnt);
+            ps.setString(3, LocalDateTime.now().toString());
+
+            int n = ps.executeUpdate();
+            if(n > 0){
+                System.out.println("생성 성공");
+            } else {
+                System.out.println("생성 실패");
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null && !ps.isClosed()) {
+                    ps.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
     }
 }

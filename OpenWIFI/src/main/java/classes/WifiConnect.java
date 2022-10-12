@@ -79,10 +79,61 @@ public class WifiConnect {
                     " X_SWIFI_CNSTC_YEAR    TEXT, " +
                     " X_SWIFI_INOUT_DOOR    TEXT, " +
                     " X_SWIFI_REMARS3       TEXT, " +
-                    " LAT                   REAL, " +
-                    " LNT                   REAL, " +
+                    " LAT                   TEXT, " +
+                    " LNT                   TEXT, " +
                     " WORK_DTTM             TEXT, " +
                     " PRIMARY KEY(X_SWIFI_MGR_NO)) ";
+            ps = connection.prepareStatement(sql);
+
+            int n = ps.executeUpdate();
+            if(n > 0){
+                System.out.println("생성 성공");
+            } else {
+                System.out.println("생성 실패");
+            }
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null && !ps.isClosed()) {
+                    ps.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void createLogTable(String dbClass, String dbUrl, String tbName) {
+
+        try {
+            Class.forName(dbClass);
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        Connection connection = null;
+        PreparedStatement ps = null;
+
+        try {
+            connection = DriverManager.getConnection(dbUrl);
+
+            // Create table
+            String sql = " CREATE TABLE IF NOT EXISTS " + tbName + " ( " +
+                    " ID    INTEGER, " +
+                    " LAT   REAL, " +
+                    " LNT   REAL, " +
+                    " DTTM  TEXT, " +
+                    " PRIMARY KEY(ID AUTOINCREMENT)) ";
             ps = connection.prepareStatement(sql);
 
             int n = ps.executeUpdate();

@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ApiModel {
     private Wifi wifi;
-    public double dist;
+    public float dist;
 }

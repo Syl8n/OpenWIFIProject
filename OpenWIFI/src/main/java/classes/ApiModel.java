@@ -1,5 +1,9 @@
 package classes;
 
-public class ApiModel {
+import lombok.Data;
 
+@Data
+public class ApiModel {
+    private Wifi wifi;
+    public double dist;
 }

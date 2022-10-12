@@ -1,8 +1,9 @@
+<%@ page import="classes.Wifi" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
     <title>와이파이 정보 구하기</title>
-    <script type="text/css" src="styles.css"></script>
+    <link href="styles.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div>
@@ -24,10 +25,12 @@
       </a>
     </div>
     <div>
-      LAT: <input type="text" name="lat" size="15">,
-      LNT: <input type="text" name="lnt" size="15">
+      <form action="/MainServlet.do" method="post">
+        LAT: <input type="text" name="lat" size="15">,
+        LNT: <input type="text" name="lnt" size="15">
       <button type="button">내 위치 가져오기</button>
-      <button type="button">근처 WIPI 정보 보기</button>
+      <button type="submit">근처 WIPI 정보 보기</button>
+      </form>
     </div>
     <div>
       <table>
@@ -50,6 +53,27 @@
           <th>Y좌표</th>
           <th>작업일자</th>
         </tr>
+        <% if(!Wifi.list.isEmpty()) { %>
+        <% for(int i = 0; i < 20 && Wifi.list.peek() != null; i++){ %>
+        <% Wifi wifi = Wifi.list.poll().getWifi(); %>
+        <td><%= wifi.getX_SWIFI_MGR_NO() %></td>
+        <td><%= wifi.getX_SWIFI_WRDOFC() %></td>
+        <td><%= wifi.getX_SWIFI_MAIN_NM() %></td>
+        <td><%= wifi.getX_SWIFI_ADRES1() %></td>
+        <td><%= wifi.getX_SWIFI_ADRES2() %></td>
+        <td><%= wifi.getX_SWIFI_INSTL_FLOOR() %></td>
+        <td><%= wifi.getX_SWIFI_INSTL_TY() %></td>
+        <td><%= wifi.getX_SWIFI_INSTL_MBY() %></td>
+        <td><%= wifi.getX_SWIFI_SVC_SE() %></td>
+        <td><%= wifi.getX_SWIFI_CMCWR() %></td>
+        <td><%= wifi.getX_SWIFI_CNSTC_YEAR() %></td>
+        <td><%= wifi.getX_SWIFI_INOUT_DOOR() %></td>
+        <td><%= wifi.getX_SWIFI_REMARS3() %></td>
+        <td><%= wifi.getLAT() %></td>
+        <td><%= wifi.getLNT() %></td>
+        <td><%= wifi.getWORK_DTTM() %></td>
+        <% } %>
+        <% } %>
       </table>
     </div>
   </body>

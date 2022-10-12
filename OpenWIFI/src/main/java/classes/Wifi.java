@@ -2,13 +2,11 @@ package classes;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.PriorityQueue;
 
 @Data
 public class Wifi {
-    public static List<Wifi> wifiList = new ArrayList<>();
-
+    public static PriorityQueue<ApiModel> list = new PriorityQueue<>((x, y) -> (int) (x.dist - y.dist));
     private String X_SWIFI_MGR_NO;
     private String X_SWIFI_WRDOFC;
     private String X_SWIFI_MAIN_NM;

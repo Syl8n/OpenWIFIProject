@@ -4,7 +4,7 @@
 <html>
   <head>
     <title>와이파이 정보 구하기</title>
-    <link href="styles.css" rel="stylesheet" type="text/css">
+    <link href="styles.css?ver1" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div>
@@ -27,9 +27,10 @@
     </div>
     <div>
       <form action="/MainServlet.do" method="post">
-        LAT: <input type="text" name="lat" size="15">,
-        LNT: <input type="text" name="lnt" size="15">
-      <button type="button">내 위치 가져오기</button>
+        <input type="hidden" name="comm" value="search">
+        LAT: <input type="text" id="lat" name="lat" size="15" value="0.0">,
+        LNT: <input type="text" id="lnt" name="lnt" size="15" value="0.0">
+      <button type="button" onclick="getUserLocation()">내 위치 가져오기</button>
       <button type="submit">근처 WIPI 정보 보기</button>
       </form>
     </div>
@@ -55,8 +56,8 @@
           <th>작업일자</th>
         </tr>
         <% if(!Wifi.list.isEmpty()) { %>
-        <% for(int i = 0; i < 20 && Wifi.list.peek() != null; i++){ %>
-        <% ApiModel apiModel = Wifi.list.poll(); %>
+        <% for(int i = 0; i < Math.min(20, Wifi.list.size()); i++){ %>
+        <% ApiModel apiModel = Wifi.list.get(i); %>
         <% Wifi wifi = apiModel.getWifi(); %>
         <tr>
           <td><%= apiModel.dist %></td>
@@ -78,8 +79,15 @@
           <td><%= wifi.getWORK_DTTM() %></td>
         </tr>
         <% } %>
+        <% } else { %>
+        <tr>
+          <td colspan="17">
+            <b>위치 정보를 입력한 후에 조회해 주세요.</b>
+          </td>
+        </tr>
         <% } %>
       </table>
     </div>
+    <script type="text/javascript" src="scripts.js"></script>
   </body>
 </html>

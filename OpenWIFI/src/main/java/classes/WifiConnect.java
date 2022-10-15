@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+// 4기 서진우
+
 public class WifiConnect {
     public static void truncateTable(String dbClass, String dbUrl, String tbName) {
         try {

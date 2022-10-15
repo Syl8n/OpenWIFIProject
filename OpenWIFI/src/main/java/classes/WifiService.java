@@ -14,10 +14,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.sqlite.core.DB;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
+
+// 4기 서진우
 
 public class WifiService {
     private static final String DB_URL = "jdbc:sqlite:wifiTest.db";
@@ -35,6 +37,9 @@ public class WifiService {
         long end = 1;
         long maxEnd = 1;
         final long TEST_MAX = 10;
+        if(!Wifi.list.isEmpty()){
+            Wifi.list.clear();
+        }
         StringBuilder urlBuilder = new StringBuilder("http://openapi.seoul.go.kr:8088");
         urlBuilder.append("/" + URLEncoder.encode(key,"UTF-8") );
         urlBuilder.append("/" + URLEncoder.encode(docType,"UTF-8") );
@@ -258,8 +263,9 @@ public class WifiService {
                 ApiModel apiModel = new ApiModel();
                 apiModel.setWifi(wifi);
                 apiModel.setDist(calcDist(Float.parseFloat(wifi.getLNT()), Float.parseFloat(wifi.getLAT()), lnt, lat));
-                Wifi.list.offer(apiModel);
+                Wifi.list.add(apiModel);
             }
+            Collections.sort(Wifi.list);
         } catch (SQLException e){
             e.printStackTrace();
         } finally {
@@ -361,9 +367,9 @@ public class WifiService {
 
             int n = ps.executeUpdate();
             if(n > 0){
-                System.out.println("생성 성공");
+                System.out.println("삭제 성공");
             } else {
-                System.out.println("생성 실패");
+                System.out.println("삭제 실패");
             }
 
         } catch (SQLException e){

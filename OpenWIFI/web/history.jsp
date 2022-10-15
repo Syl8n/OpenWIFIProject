@@ -1,10 +1,9 @@
 <%@ page import="classes.Log" %>
-<%@ page import="classes.WifiService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
     <title>와이파이 정보 구하기</title>
-    <link href="styles.css" rel="stylesheet" type="text/css">
+    <link href="styles.css?after" rel="stylesheet" type="text/css">
   </head>
   <body>
     <div>
@@ -27,9 +26,10 @@
     </div>
     <div>
       <form action="/MainServlet.do" method="post">
-        LAT: <input type="text" name="lat" size="15">,
-        LNT: <input type="text" name="lnt" size="15">
-      <button type="button">내 위치 가져오기</button>
+        <input type="hidden" name="comm" value="search">
+        LAT: <input type="text" id="lat" name="lat" size="15" value="37.0">,
+        LNT: <input type="text" id="lnt" name="lnt" size="15" value="127.0">
+      <button type="button" onclick="getUserLocation()">내 위치 가져오기</button>
       <button type="submit">근처 WIPI 정보 보기</button>
       </form>
     </div>
@@ -50,11 +50,18 @@
           <td><%= log.getLnt() %></td>
           <td><%= log.getLat() %></td>
           <td><%= log.getDttm() %></td>
-          <td><button type="button" onclick="">삭제</button></td>
+          <td>
+            <form action="/MainServlet.do" method="post">
+              <input type="hidden" name="comm" value="delete">
+              <input type="hidden" name="no" value=<%= log.getId() %>>
+              <button type="submit">삭제</button>
+            </form>
+          </td>
         </tr>
         <% } %>
         <% } %>
       </table>
     </div>
+    <script type="text/javascript" src="scripts.js"></script>
   </body>
 </html>

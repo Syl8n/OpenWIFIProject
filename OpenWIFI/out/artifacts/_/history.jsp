@@ -1,5 +1,4 @@
 <%@ page import="classes.Log" %>
-<%@ page import="classes.WifiService" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
@@ -28,8 +27,8 @@
     <div>
       <form action="/MainServlet.do" method="post">
         <input type="hidden" name="comm" value="search">
-        LAT: <input type="text" id="lat" name="lat" size="15" value="0.0">,
-        LNT: <input type="text" id="lnt" name="lnt" size="15" value="0.0">
+        LAT: <input type="text" id="lat" name="lat" size="15" value="37.0">,
+        LNT: <input type="text" id="lnt" name="lnt" size="15" value="127.0">
       <button type="button" onclick="getUserLocation()">내 위치 가져오기</button>
       <button type="submit">근처 WIPI 정보 보기</button>
       </form>

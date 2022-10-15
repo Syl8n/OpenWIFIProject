@@ -21,15 +21,14 @@ public class WifiConnect {
             connection = DriverManager.getConnection(dbUrl);
 
             // Delete data
-            //String sql = " DROP TABLE IF EXISTS " + tbName;
             String sql = " DELETE from " + tbName;
             ps = connection.prepareStatement(sql);
 
             int n = ps.executeUpdate();
             if(n > 0){
-                System.out.println("삭제 성공");
+                System.out.println("메인테이블 삭제 성공");
             } else {
-                System.out.println("삭제 실패");
+                System.out.println("메인테이블 실패");
             }
         } catch (SQLException ex){
             ex.printStackTrace();
@@ -89,9 +88,9 @@ public class WifiConnect {
 
             int n = ps.executeUpdate();
             if(n > 0){
-                System.out.println("생성 성공");
+                System.out.println("메인테이블 생성 성공");
             } else {
-                System.out.println("생성 실패");
+                System.out.println("메인테이블 생성 실패");
             }
 
         } catch (SQLException e){
@@ -140,9 +139,9 @@ public class WifiConnect {
 
             int n = ps.executeUpdate();
             if(n > 0){
-                System.out.println("생성 성공");
+                System.out.println("로그테이블 생성 성공");
             } else {
-                System.out.println("생성 실패");
+                System.out.println("로그테이블 생성 실패");
             }
 
         } catch (SQLException e){

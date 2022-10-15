@@ -10,6 +10,12 @@ public class ApiModel implements Comparable<ApiModel>{
 
     @Override
     public int compareTo(@NotNull ApiModel o) {
-        return (int) (this.dist - o.dist);
+        if(this.dist < o.dist){
+            return -1;
+        } else if(this.dist > o.dist){
+            return 1;
+        } else{
+            return 0;
+        }
     }
 }

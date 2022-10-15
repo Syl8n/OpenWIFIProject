@@ -22,7 +22,7 @@ import java.util.Collections;
 // 4기 서진우
 
 public class WifiService {
-    private static final String DB_URL = "jdbc:sqlite:wifiTest.db";
+    private static final String DB_URL = "jdbc:sqlite:wifi.db";
     private static final String DB_CLASS = "org.sqlite.JDBC";
 
     private static String setRange(String str, long start, long end) throws IOException {
@@ -36,7 +36,7 @@ public class WifiService {
         long start = 1;
         long end = 1;
         long maxEnd = 1;
-        final long TEST_MAX = 10;
+        final long TEST_MAX = 0;
         if(!Wifi.list.isEmpty()){
             Wifi.list.clear();
         }
@@ -45,8 +45,8 @@ public class WifiService {
         urlBuilder.append("/" + URLEncoder.encode(docType,"UTF-8") );
         urlBuilder.append("/" + URLEncoder.encode(category,"UTF-8"));
         String urlStr = urlBuilder.toString();
-        WifiConnect.createTable(DB_CLASS, DB_URL, "wifi_test");
-        WifiConnect.truncateTable(DB_CLASS, DB_URL, "wifi_test");
+        WifiConnect.createTable(DB_CLASS, DB_URL, "wifi");
+        WifiConnect.truncateTable(DB_CLASS, DB_URL, "wifi");
         try {
             Class.forName(DB_CLASS);
         } catch (ClassNotFoundException ex) {
@@ -80,6 +80,7 @@ public class WifiService {
             while ((line = rd.readLine()) != null) {
                 sb.append(line);
             }
+            System.out.println(sb);
             rd.close();
             conn.disconnect();
 
@@ -98,7 +99,7 @@ public class WifiService {
                 }
             }
             start = end + 1;
-            end = Math.min(start + 1000, maxEnd);
+            end = Math.min(start + 999, maxEnd);
         }while(start <= maxEnd);
         try {
             if (dbConn != null && !dbConn.isClosed()) {
@@ -111,6 +112,8 @@ public class WifiService {
     }
 
     public static void getLogs(){
+        WifiConnect.createLogTable(DB_CLASS, DB_URL, "wifi_log");
+
         try {
             Class.forName(DB_CLASS);
         } catch (ClassNotFoundException ex) {
@@ -173,7 +176,7 @@ public class WifiService {
 
         try {
             // Insert data
-            String sql = " INSERT into WIFI_TEST (X_SWIFI_MGR_NO, X_SWIFI_WRDOFC, X_SWIFI_MAIN_NM, " +
+            String sql = " INSERT into WIFI (X_SWIFI_MGR_NO, X_SWIFI_WRDOFC, X_SWIFI_MAIN_NM, " +
                     " X_SWIFI_ADRES1, X_SWIFI_ADRES2, X_SWIFI_INSTL_FLOOR, X_SWIFI_INSTL_TY, X_SWIFI_INSTL_MBY, " +
                     " X_SWIFI_SVC_SE, X_SWIFI_CMCWR, X_SWIFI_CNSTC_YEAR, X_SWIFI_INOUT_DOOR, X_SWIFI_REMARS3, " +
                     " LAT, LNT, WORK_DTTM) " +
@@ -218,7 +221,14 @@ public class WifiService {
     }
 
     private static float calcDist(float x1, float y1, float x2, float y2){
-        return (float) Math.sqrt((x1 - x2) * (x1 - x2) * 90 + (y1 - y2) * (y1 - y2) * 111);
+        double theta = x1 - x2;
+        double dist = Math.sin(Math.toRadians(y1)) * Math.sin(Math.toRadians(y2)) +
+                Math.cos(Math.toRadians(y1)) * Math.cos(Math.toRadians(y2)) * Math.cos(Math.toRadians(theta));
+        dist = Math.acos(dist);
+        dist = Math.toDegrees(dist);
+        dist = dist * 60 * 1.1515 * 1.609344;
+        dist = Math.round(dist * 10000) / 10000.0;
+        return (float) dist;
     }
 
     public static void search(float lat, float lnt){
@@ -235,7 +245,7 @@ public class WifiService {
         try {
             connection = DriverManager.getConnection(DB_URL);
 
-            String sql = " select * from WIFI_TEST ";
+            String sql = " select * from WIFI ";
             ps = connection.prepareStatement(sql);
 
             rs = ps.executeQuery();
@@ -321,9 +331,9 @@ public class WifiService {
 
             int n = ps.executeUpdate();
             if(n > 0){
-                System.out.println("생성 성공");
+                System.out.println("로그 입력 성공");
             } else {
-                System.out.println("생성 실패");
+                System.out.println("로그 입력 실패");
             }
 
         } catch (SQLException e){
@@ -367,9 +377,9 @@ public class WifiService {
 
             int n = ps.executeUpdate();
             if(n > 0){
-                System.out.println("삭제 성공");
+                System.out.println("로그 삭제 성공");
             } else {
-                System.out.println("삭제 실패");
+                System.out.println("로그 삭제 실패");
             }
 
         } catch (SQLException e){

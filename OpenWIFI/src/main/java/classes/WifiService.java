@@ -201,9 +201,7 @@ public class WifiService {
 
             int n = ps.executeUpdate();
 
-            if(n > 0){
-                System.out.println("저장 성공");
-            } else {
+            if(n <= 0){
                 System.out.println("저장 실패");
             }
 

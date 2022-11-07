@@ -38,4 +38,12 @@
 
 2. Run - Edit configurations 창에서 Tomcat Server 밑에 Tomcat 8.5.83 클릭
 
-3. Application Server에 다운한 Tomcat server 등록 후 저장&실행
+3. Application Server에 다운한 Tomcat server - local 등록
+
+4. VM options: -Dfile.encoding=UTF-8
+
+5. Deployment에서 Artifact 추가
+
+6. Application context: / 로 수정.
+
+7. Tomcat으로 실행
